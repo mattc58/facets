@@ -24,20 +24,29 @@ class QueryHandler(tornado.web.RequestHandler):
         '''
         Process the query. Keep it simple for now:
             no parameters: show the top 100 results
-            ?q=field1:val1+field2:val2+field3:val3
+            ?q=field1:val1,field2:val2,field3:val3
+            ?size=<num to result>
             ?facets=[field1,field2,field3]: facet on these fields
         '''
         query = self.get_argument('q', default=None)
         facets = self.get_argument('facets', default=None)
+        size = int(self.get_argument('size', default=10))
 
         # first get the raw docs as asked for by the query
-        results = self._facet_store.get_results(query)
+        if query:
+            query = [item.split(':') for item in query.split(',')]
+
+        results = self._facet_store.get_results(query, size) or []
 
         # now get the facets
-        facet_resullts = self._facet_store.get_facets(results, facets)
+        if facets:
+            facets = facets.split(',')
+            facet_results = self._facet_store.get_facets(results, facets)
+        else:
+            facet_results = {}
 
         # turn into a dict and return
-        response = {'num_results' : len(results), 'results' : results, 'facets' : facet_resullts}
+        response = {'num_results' : len(results), 'results' : results, 'facets' : facet_results}
         self.write(response)
 
 

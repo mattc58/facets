@@ -1,0 +1,8 @@
+.vagrant/
+bin/
+lib/
+include/
+local/
+build/
+share/
+*.pyc

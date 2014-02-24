@@ -50,7 +50,7 @@ class FacetStore(object):
     def number_docs(self):
         return len(self._all_docs)
 
-    def _get_hashes_for_query(self, query):
+    def _get_hashes_for_query(self, query, size):
         '''
         Return the hashes needed for a given query
         '''
@@ -67,7 +67,7 @@ class FacetStore(object):
             match_sets.append(set(match))
 
         # now we have our match sets. Since we're ANDing we need to intersect these.
-        hashes = set.intersection(*match_sets)
+        hashes = list(set.intersection(*match_sets))[:size]
 
         return hashes
 
@@ -75,18 +75,18 @@ class FacetStore(object):
         '''
         Perform this query on the docs and return
         '''
-        hashes = self._get_hashes_for_query(query)
+        hashes = list(self._get_hashes_for_query(query, size))
 
         # we know which hashes we need
         results = [self._all_docs.get(item) for item in hashes]
-        return results[:size]
+        return results
 
 
-    def get_facets(self, query, requested_facets):
+    def get_facets(self, query, requested_facets, size):
         '''
         Perform the query and return the facets
         '''
-        hashes = self._get_hashes_for_query(query)
+        hashes = self._get_hashes_for_query(query, size)[:size]
         facets = dict([(item,{}) for item in requested_facets])
 
         # get the facet counts now for the requested facets

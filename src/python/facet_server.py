@@ -41,7 +41,7 @@ class QueryHandler(tornado.web.RequestHandler):
         # now get the facets
         if facets:
             facets = facets.split(',')
-            facet_results = self._facet_store.get_facets(query, facets)
+            facet_results = self._facet_store.get_facets(query, facets, size)
         else:
             facet_results = {}
 

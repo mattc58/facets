@@ -12,7 +12,7 @@ This uses a simple [Tornado(http://www.tornadoweb.org/en/stable/)] app to server
 Run the app as such, and pass it some data:
 
 ```
-python src/python/facet_server.py -i data/22_10.json -p 8888
+python src/python/facet_server.py -i sample_data.json -p 8888
 ```
 
 To query, use a web browser and go to http://localhost:8888, or use cURL:
